@@ -7,6 +7,8 @@ import android.widget.MediaController;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.dropbox.core.DbxException;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -21,7 +23,7 @@ public class CircledVideoView extends VideoView {
         super(context);
     }
 
-    public void UpdateVideoSource(final Activity activity) {
+    public void UpdateVideoSource(final Activity activity) throws DbxException {
         final ArrayList<File> videoFiles = DropboxService.getInstance().VideoFiles();
         if (videoFiles.size() > 0) {
             String videoSource = videoFiles.get(currentVideoId).getAbsolutePath();
@@ -38,7 +40,11 @@ public class CircledVideoView extends VideoView {
                         currentVideoId = 0;
                     }
 
-                    UpdateVideoSource(activity);
+                    try {
+                        UpdateVideoSource(activity);
+                    } catch (DbxException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
 

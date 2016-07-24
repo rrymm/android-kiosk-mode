@@ -39,8 +39,10 @@ public class FullscreenActivity extends AppCompatActivity {
 
         setContentView(layout);
 
-
-        DropboxService.getInstance().DBApi().getSession().startOAuth2Authentication(FullscreenActivity.this);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                .permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        DropboxService.getInstance().Authentificate();
     }
 
     @Override
@@ -52,11 +54,6 @@ public class FullscreenActivity extends AppCompatActivity {
                 FullscreenActivity.this.startKioskActivity();
             }
         }, 20000); // 20 seconds
-
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-                .permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-        DropboxService.getInstance().Authentificate();
     }
 
     @Override

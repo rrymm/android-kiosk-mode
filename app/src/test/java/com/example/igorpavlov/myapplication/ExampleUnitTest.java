@@ -15,7 +15,8 @@ public class ExampleUnitTest {
         assertEquals(4, 2 + 2);
     }
 
-    public void check_DropBoxConnection() {
+    @Test
+    public void checkDropBoxConnection_isCorrect() throws Exception {
         assertNotEquals(DropboxService.getInstance().VideoFiles().size(), 0);
     }
 }

@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.dropbox.core.DbxException;
+
 public class DropboxVideoActivity extends AppCompatActivity {
 
     @Override
@@ -22,7 +24,11 @@ public class DropboxVideoActivity extends AppCompatActivity {
             }
         });
 
-        videoView.UpdateVideoSource(this);
+        try {
+            videoView.UpdateVideoSource(this);
+        } catch (DbxException e) {
+            e.printStackTrace();
+        }
     }
 
 }
