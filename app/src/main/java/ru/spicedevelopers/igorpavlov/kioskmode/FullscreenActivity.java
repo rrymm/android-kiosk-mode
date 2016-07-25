@@ -42,7 +42,8 @@ public class FullscreenActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
                 .permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        DropboxService.getInstance().Authentificate();
+
+        DropboxService.EstablishConnection();
     }
 
     @Override

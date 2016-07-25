@@ -26,6 +26,7 @@ public class DropboxService {
     final static private String APP_KEY = "70e1p6e72fecncq";
     final static private String APP_SECRET = "cdg01scd4akk9jw";
     final static private String TOKEN = "Vb9-3xOWs3UAAAAAAAB1d-MjoSCjnwtmCIh_c7TyG1BEns27J1VIH_k3kyaST0dB";
+    final static private String APP_PATH = "/sdcard/Android/data/kiosk";
 
 
     private static DropboxService instance;
@@ -43,74 +44,41 @@ public class DropboxService {
 
         client = new DbxClient(config, TOKEN);
         try {
-            //Log.i("java", "Linked account: " + client.getAccountInfo().displayName);
             System.out.println(client.getAccountInfo().displayName);
-        } catch (DbxException e) {
-            //Log.i("java", e.toString());
+        } catch (DbxException ignored) {
         }
     }
 
     public static DropboxService getInstance() {
         if (instance == null)
-            instance = new DropboxService();
+            EstablishConnection();
         return instance;
     }
 
-    public void Authentificate() {
-
-
-    }
-
-
-    private void ListFiles(String dirName) {
-        try {
-            //DbxEntry entry = client.getMetadata("/videos");
-            DbxEntry.WithChildren data = client.getMetadataWithChildren("/videos");
-            for (DbxEntry entry : data.children) {
-                Log.i("entry", entry.path);
-            }
-            /*
-            List<DbxEntry> items = client.(dirName, "mp4", 100, false);
-
-
-            if (items.size() == 0) {
-                items = DBApi().search("/", "videos", 100, true);
-                Log.i("DBAuthLog", "Created videos folder");
-                if (items.size() == 0)
-                    DBApi().createFolder("videos");
-            }
-
-            ArrayList<File> videos = new ArrayList<>();
-            for (int i = 0; i < items.size(); i++) {
-                String name = items.get(i).path + items.get(i).fileName();
-                Log.i("DbAuthLog", name);
-                videos.add(DownloadFile(name));
-            }
-            files = videos;*/
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public static void EstablishConnection() {
+        instance = new DropboxService();
     }
 
     public ArrayList<File> VideoFiles() throws DbxException {
         DbxEntry.WithChildren children = client.getMetadataWithChildren("/videos");
         files = new ArrayList<>();
 
+        File directory = new File(APP_PATH);
+        if (directory.mkdirs())
+            Log.i("kiosk", "Folder created");
+
 
         for (DbxEntry entry : children.children) {
             DbxEntry.File file = entry.asFile();
-            File f = new File(file.name);
-            try {
-                FileOutputStream outputStream = new FileOutputStream(f);
-                client.getFile(file.path, file.rev, outputStream);
-            } catch (Exception e) {
-                e.printStackTrace();
+            File f = new File(directory.getAbsolutePath() + file.name);
+            DropboxFile dbFile = new DropboxFile(f, file);
+            if (dbFile.Store()) {
+                Log.i("kiosk", f.getPath());
+                files.add(f);
             }
-
-            files.add(f);
         }
         return files;
     }
 
 }
+
